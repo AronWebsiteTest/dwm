@@ -11,20 +11,25 @@ static       int smartgaps          = 0;        /* 1 means no outer gap when the
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
-static char font[]            = "monospace:size=10";
-static char dmenufont[]       = "monospace:size=10";
-static const char *fonts[]          = { font };
+static char font[]            = "monospace:size=12";
+static char dmenufont[]       = "monospace:size=12";
+static const char *fonts[]          = { font,"fontawesome:size=12" };
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
 static char selbordercolor[]        = "#005577";
 static char selbgcolor[]            = "#005577";
+static char col_urgborder[]	    = "#ff0000";
 static char *colors[][3] = {
        /*               fg           bg           border   */
        [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
        [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+       [SchemeUrg]  = { selfgcolor,  selbgcolor,  col_urgborder   },
 };
+
+
+
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
@@ -116,6 +121,8 @@ ResourcePref resources[] = {
 		{ "mfact",      	 	FLOAT,   &mfact },
 };
 
+#include<X11/XF86keysym.h>
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          SHCMD("dmenu_run") },
@@ -163,6 +170,13 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
+	{ 0, XF86XK_AudioRaiseVolume,              spawn,	   SHCMD("pactl set-sink-mute 0 false; pactl set-sink-volume 0 +5%")},
+	{ 0, XF86XK_AudioLowerVolume,	           spawn,          SHCMD("pactl set-sink-mute 0 false; pactl set-sink-volume 0 -5%")},
+	{ 0, XF86XK_AudioMute,			   spawn, 	   SHCMD("pactl set-sink-mute 0 toggle")},
+	{ 0, XF86XK_AudioMicMute,		   spawn, 	   SHCMD("pactl set-source-mute 1 toggle")},
+	{ 0, XF86XK_ScreenSaver,	           spawn,	   SHCMD("slock")},
+	{ Mod4Mask,			XK_b,      spawn,	   SHCMD("$BROWSER")},
+	{ Mod4Mask,			XK_r,      spawn,	   SHCMD("st $FILEMANAGER")},
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
